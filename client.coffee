@@ -1,6 +1,6 @@
 Canvas = ->
-  width = 800
-  height = 800
+  width = 600
+  height = 300
 
   canvas_html = """
     <canvas id='canvas' width='#{width}' height='#{height}' style='border: 1px blue solid'>
@@ -10,6 +10,9 @@ Canvas = ->
 
   canvas = document.getElementById("canvas")
   ctx = canvas.getContext("2d")
+
+  clear: ->
+    canvas.width = width
 
   draw_triangle: (color, point1, point2, point3) ->
     ctx.fillStyle = color
@@ -34,8 +37,8 @@ Canvas = ->
     ctx.closePath()
   
 TwelveTriangles = (canvas) ->
-  skew = 3.7
-  height = -1.5
+  skew = 0
+  height = 1
   
   rescale = (point) ->
     [x, y] = point
@@ -43,7 +46,7 @@ TwelveTriangles = (canvas) ->
     x += y * skew
     x /= height
     y *= height
-    [x * 40 + 300, -y * 40 + 200]
+    [x * 40 + 300, -y * 40 + 150]
     
   draw_triangle = (triangle, color, points) ->
     v0 = triangle.charAt(0)
@@ -65,9 +68,7 @@ TwelveTriangles = (canvas) ->
       J: [2, -2]
       K: [6, -2]
       
-    scaled_points = {}
-    for vertex, point of points
-      scaled_points[vertex] = rescale point
+
     triangles = [
       ["ABE", "red"]
       ["BED", "green"]
@@ -84,12 +85,37 @@ TwelveTriangles = (canvas) ->
       ["JHK", "pink"]
     ]
     
-    for triangle in triangles
-      [vertices, color] = triangle
-      draw_triangle vertices, color, scaled_points
+    redraw = ->
+      canvas.clear()
+      scaled_points = {}
+      for vertex, point of points
+        scaled_points[vertex] = rescale point
       
-    vertices = (scaled_points[vertex] for vertex in ["E", "C", "K"])
-    canvas.outline_triangle "black", vertices...
+      for triangle in triangles
+        [vertices, color] = triangle
+        draw_triangle vertices, color, scaled_points
+      
+      vertices = (scaled_points[vertex] for vertex in ["E", "C", "K"])
+      canvas.outline_triangle "black", vertices...
+
+    redraw()
+    
+    $("#more_skew").click ->
+      skew += 0.2
+      redraw()
+          
+    $("#less_skew").click ->
+      skew -= 0.2
+      redraw()
+
+    $("#taller").click ->
+      height += 0.1
+      redraw()
+    
+    $("#wider").click ->
+      height -= 0.1
+      redraw()
+
 
 jQuery(document).ready ->
   canvas = Canvas()

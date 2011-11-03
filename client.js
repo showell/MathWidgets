@@ -3,13 +3,16 @@
   var __slice = Array.prototype.slice;
   Canvas = function() {
     var canvas, canvas_html, ctx, height, width;
-    width = 800;
-    height = 800;
+    width = 600;
+    height = 300;
     canvas_html = "<canvas id='canvas' width='" + width + "' height='" + height + "' style='border: 1px blue solid'>\n</canvas>";
     $("#main").append(canvas_html);
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
     return {
+      clear: function() {
+        return canvas.width = width;
+      },
       draw_triangle: function(color, point1, point2, point3) {
         ctx.fillStyle = color;
         ctx.beginPath();
@@ -36,8 +39,8 @@
   };
   TwelveTriangles = function(canvas) {
     var draw_triangle, height, rescale, skew;
-    skew = 3.7;
-    height = -1.5;
+    skew = 0;
+    height = 1;
     rescale = function(point) {
       var x, y;
       x = point[0], y = point[1];
@@ -45,7 +48,7 @@
       x += y * skew;
       x /= height;
       y *= height;
-      return [x * 40 + 300, -y * 40 + 200];
+      return [x * 40 + 300, -y * 40 + 150];
     };
     draw_triangle = function(triangle, color, points) {
       var v0, v1, v2;
@@ -56,7 +59,7 @@
     };
     return {
       draw: function() {
-        var color, point, points, scaled_points, triangle, triangles, vertex, vertices, _i, _len;
+        var points, redraw, triangles;
         points = {
           A: [0, 2],
           B: [2, 2],
@@ -70,28 +73,49 @@
           J: [2, -2],
           K: [6, -2]
         };
-        scaled_points = {};
-        for (vertex in points) {
-          point = points[vertex];
-          scaled_points[vertex] = rescale(point);
-        }
         triangles = [["ABE", "red"], ["BED", "green"], ["BCD", "blue"], ["DEF", "blue"], ["DFC", "green"], ["CFG", "red"], ["EFH", "pink"], ["FHK", "lightgreen"], ["FGK", "lightblue"], ["EIJ", "lightblue"], ["EJH", "lightgreen"], ["JHK", "pink"]];
-        for (_i = 0, _len = triangles.length; _i < _len; _i++) {
-          triangle = triangles[_i];
-          vertices = triangle[0], color = triangle[1];
-          draw_triangle(vertices, color, scaled_points);
-        }
-        vertices = (function() {
-          var _j, _len2, _ref, _results;
-          _ref = ["E", "C", "K"];
-          _results = [];
-          for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
-            vertex = _ref[_j];
-            _results.push(scaled_points[vertex]);
+        redraw = function() {
+          var color, point, scaled_points, triangle, vertex, vertices, _i, _len;
+          canvas.clear();
+          scaled_points = {};
+          for (vertex in points) {
+            point = points[vertex];
+            scaled_points[vertex] = rescale(point);
           }
-          return _results;
-        })();
-        return canvas.outline_triangle.apply(canvas, ["black"].concat(__slice.call(vertices)));
+          for (_i = 0, _len = triangles.length; _i < _len; _i++) {
+            triangle = triangles[_i];
+            vertices = triangle[0], color = triangle[1];
+            draw_triangle(vertices, color, scaled_points);
+          }
+          vertices = (function() {
+            var _j, _len2, _ref, _results;
+            _ref = ["E", "C", "K"];
+            _results = [];
+            for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+              vertex = _ref[_j];
+              _results.push(scaled_points[vertex]);
+            }
+            return _results;
+          })();
+          return canvas.outline_triangle.apply(canvas, ["black"].concat(__slice.call(vertices)));
+        };
+        redraw();
+        $("#more_skew").click(function() {
+          skew += 0.2;
+          return redraw();
+        });
+        $("#less_skew").click(function() {
+          skew -= 0.2;
+          return redraw();
+        });
+        $("#taller").click(function() {
+          height += 0.1;
+          return redraw();
+        });
+        return $("#wider").click(function() {
+          height -= 0.1;
+          return redraw();
+        });
       }
     };
   };
