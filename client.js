@@ -120,9 +120,32 @@
     };
   };
   MultiplicationTables = function() {
-    var draw, width;
-    draw = function(width) {
-      var height, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
+    var draw, max_prime_factor, width;
+    max_prime_factor = function(n) {
+      var i, max;
+      max = null;
+      for (i = 2; 2 <= n ? i < n : i > n; 2 <= n ? i++ : i--) {
+        if (i * 2 > n) {
+          break;
+        }
+        if (n % i === 0) {
+          max = i;
+          if (i > 10) {
+            return max;
+          }
+        }
+      }
+      if (max) {
+        return max;
+      }
+      if (n < 15) {
+        return n;
+      }
+      return max_prime_factor(n - 1);
+    };
+    width = 10;
+    draw = function() {
+      var f, height, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
       table = $("#multiplication");
       table.empty();
       height = Math.floor(169 / width);
@@ -161,22 +184,28 @@
           }
           td.attr("height", 30);
           td.attr("width", 30);
+          f = function(n) {
+            return td.click(function() {
+              width = max_prime_factor(n);
+              return draw();
+            });
+          };
+          f(n);
           tr.append(td);
         }
         _results.push(tr.append($("<td> " + (i + 1) + " * " + width + " = " + ((i + 1) * width) + " </td>")));
       }
       return _results;
     };
-    width = 10;
     $("#multi_wide").click(function() {
       width += 1;
-      return draw(width);
+      return draw();
     });
     $("#multi_narrow").click(function() {
       width -= 1;
-      return draw(width);
+      return draw();
     });
-    return draw(width);
+    return draw();
   };
   jQuery(document).ready(function() {
     var canvas;
