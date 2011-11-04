@@ -1,5 +1,5 @@
 (function() {
-  var Canvas, TwelveTriangles;
+  var Canvas, MultiplicationTables, TwelveTriangles;
   var __slice = Array.prototype.slice;
   Canvas = function() {
     var canvas, canvas_html, ctx, height, width;
@@ -119,9 +119,69 @@
       }
     };
   };
+  MultiplicationTables = function() {
+    var draw, width;
+    draw = function(width) {
+      var height, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
+      table = $("#multiplication");
+      table.empty();
+      height = Math.floor(169 / width);
+      max = null;
+      _ref = [2, 3, 4, 5, 7, 11, 13, 17];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        n = _ref[_i];
+        if (width % n === 0) {
+          max = n;
+        }
+      }
+      _results = [];
+      for (i = 0; 0 <= height ? i < height : i > height; 0 <= height ? i++ : i--) {
+        tr = $("<tr>");
+        table.append(tr);
+        for (j = 0; 0 <= width ? j < width : j > width; 0 <= width ? j++ : j--) {
+          n = i * width + j + 1;
+          if (n % 13 === 0) {
+            style = "background: #FF00FF";
+          } else if (n % 11 === 0) {
+            style = "background: #FFFF00";
+          } else if (n % 7 === 0) {
+            style = "background: #00FFFF";
+          } else if (n % 5 === 0) {
+            style = "background: red";
+          } else if (n % 3 === 0) {
+            style = "background: lightblue";
+          } else if (n % 2 === 0) {
+            style = "background: #DDDDDD";
+          } else {
+            style = "";
+          }
+          td = $("<td style='" + style + "'>" + n + "</td>");
+          if (max && (j + 1) % max === 0) {
+            td.css("border-right", "2px black solid");
+          }
+          td.attr("height", 30);
+          td.attr("width", 30);
+          tr.append(td);
+        }
+        _results.push(tr.append($("<td> " + (i + 1) + " * " + width + " = " + ((i + 1) * width) + " </td>")));
+      }
+      return _results;
+    };
+    width = 10;
+    $("#multi_wide").click(function() {
+      width += 1;
+      return draw(width);
+    });
+    $("#multi_narrow").click(function() {
+      width -= 1;
+      return draw(width);
+    });
+    return draw(width);
+  };
   jQuery(document).ready(function() {
     var canvas;
     canvas = Canvas();
-    return TwelveTriangles(canvas).draw();
+    TwelveTriangles(canvas).draw();
+    return MultiplicationTables();
   });
 }).call(this);
