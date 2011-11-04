@@ -14,6 +14,15 @@ Canvas = (div, id) ->
   clear: ->
     canvas.width = width
 
+  segment: (color, point1, point2) ->
+    ctx.strokeStyle = color
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo point1...
+    ctx.lineTo point2...
+    ctx.stroke()
+    ctx.closePath()
+    
   draw_polygon: (color, point1, more_points...) ->
     ctx.fillStyle = color
     ctx.beginPath()
@@ -25,7 +34,6 @@ Canvas = (div, id) ->
     ctx.closePath()
   
   outline_triangle: (color, point1, point2, point3) ->
-    console.log "in outline_triangle", point1
     ctx.strokeStyle = color
     ctx.lineWidth = 1
     ctx.beginPath()
@@ -42,14 +50,13 @@ PythagProof = ->
   rescale = (point) ->
     [x, y] = point
     y -= 4
-    [x * 10 + 300, -y * 10 + 150]
+    [x * 8 + 300, -y * 8 + 150]
     
   draw_poly = (poly, color, points) ->
     coords = (points[poly.charAt(i)] for i in [0...poly.length])
-    console.log "pythag", coords
     canvas.draw_polygon color, coords...
 
-  a = 7
+  a = 8
   b = 3
   c = (a * b) / (a + b)
   points =
@@ -75,7 +82,13 @@ PythagProof = ->
     T: -> [0, -a]
     U: -> [0, 0]
     V: -> [b, a+b+c]
+    W: -> [0, a]
+    X: -> [a, -a-b]
+    Y: -> [0, -a-b]
+    Z: -> [-a, -a]
 
+  blue = "#AAAADD"
+  
   triangles = [
     ["FGDE", "cyan"]
     ["EDCB", "pink"]
@@ -84,11 +97,11 @@ PythagProof = ->
     ["UGH", "lightgreen"]
     #
     ["STU", "red"]
-    ["UQRS", "blue"]
+    ["UQRS", blue]
     #
     ["HIQ", "lightgreen"]
     ["HMV", "lightblue"]
-    ["VNJM", "blue"]
+    ["VNJM", blue]
     ["NKO", "yellow"]
     ["OKP", "red"]
     ["LKPQ", "pink"]
@@ -104,6 +117,37 @@ PythagProof = ->
     for triangle in triangles
       [vertices, color] = triangle
       draw_poly vertices, color, scaled_points
+
+    segment = (segment, color) ->
+      point1 = scaled_points[segment.charAt(0)]
+      point2 = scaled_points[segment.charAt(1)]
+      canvas.segment color, point1, point2
+    
+    # black > blue > green
+    segment "BW", "black"
+    segment "HQ", "black"
+    segment "HN", "black"
+    segment "NO", "black"
+    segment "OQ", "black"
+    
+    segment "BU", "blue"
+    segment "UH", "blue"
+    segment "HF", "blue"
+    segment "FB", "blue"
+    
+    segment "QI", "blue"
+    segment "NK", "blue"
+    
+    segment "EW", "blue"
+    segment "UQ", "green"
+    segment "UX", "black"
+    segment "QX", "blue"
+    segment "AG", "blue"
+    segment "UY", "blue"
+    segment "YX", "green"
+    
+    segment "AZ", "green"
+    segment "ZT", "green"
 
   redraw()      
   

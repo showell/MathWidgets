@@ -13,6 +13,15 @@
       clear: function() {
         return canvas.width = width;
       },
+      segment: function(color, point1, point2) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo.apply(ctx, point1);
+        ctx.lineTo.apply(ctx, point2);
+        ctx.stroke();
+        return ctx.closePath();
+      },
       draw_polygon: function() {
         var color, more_points, point, point1, _i, _len;
         color = arguments[0], point1 = arguments[1], more_points = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
@@ -28,7 +37,6 @@
         return ctx.closePath();
       },
       outline_triangle: function(color, point1, point2, point3) {
-        console.log("in outline_triangle", point1);
         ctx.strokeStyle = color;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -42,13 +50,13 @@
     };
   };
   PythagProof = function() {
-    var a, b, c, canvas, draw_poly, points, redraw, rescale, triangles;
+    var a, b, blue, c, canvas, draw_poly, points, redraw, rescale, triangles;
     canvas = Canvas($("#pythag_proof"), "pythag_canvas");
     rescale = function(point) {
       var x, y;
       x = point[0], y = point[1];
       y -= 4;
-      return [x * 10 + 300, -y * 10 + 150];
+      return [x * 8 + 300, -y * 8 + 150];
     };
     draw_poly = function(poly, color, points) {
       var coords, i;
@@ -60,10 +68,9 @@
         }
         return _results;
       })();
-      console.log("pythag", coords);
       return canvas.draw_polygon.apply(canvas, [color].concat(__slice.call(coords)));
     };
-    a = 7;
+    a = 8;
     b = 3;
     c = (a * b) / (a + b);
     points = {
@@ -132,24 +139,61 @@
       },
       V: function() {
         return [b, a + b + c];
+      },
+      W: function() {
+        return [0, a];
+      },
+      X: function() {
+        return [a, -a - b];
+      },
+      Y: function() {
+        return [0, -a - b];
+      },
+      Z: function() {
+        return [-a, -a];
       }
     };
-    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STU", "red"], ["UQRS", "blue"], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", "blue"], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
+    blue = "#AAAADD";
+    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STU", "red"], ["UQRS", blue], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", blue], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
     redraw = function() {
-      var color, point, scaled_points, triangle, vertex, vertices, _i, _len, _results;
+      var color, point, scaled_points, segment, triangle, vertex, vertices, _i, _len;
       canvas.clear();
       scaled_points = {};
       for (vertex in points) {
         point = points[vertex];
         scaled_points[vertex] = rescale(point());
       }
-      _results = [];
       for (_i = 0, _len = triangles.length; _i < _len; _i++) {
         triangle = triangles[_i];
         vertices = triangle[0], color = triangle[1];
-        _results.push(draw_poly(vertices, color, scaled_points));
+        draw_poly(vertices, color, scaled_points);
       }
-      return _results;
+      segment = function(segment, color) {
+        var point1, point2;
+        point1 = scaled_points[segment.charAt(0)];
+        point2 = scaled_points[segment.charAt(1)];
+        return canvas.segment(color, point1, point2);
+      };
+      segment("BW", "black");
+      segment("HQ", "black");
+      segment("HN", "black");
+      segment("NO", "black");
+      segment("OQ", "black");
+      segment("BU", "blue");
+      segment("UH", "blue");
+      segment("HF", "blue");
+      segment("FB", "blue");
+      segment("QI", "blue");
+      segment("NK", "blue");
+      segment("EW", "blue");
+      segment("UQ", "green");
+      segment("UX", "black");
+      segment("QX", "blue");
+      segment("AG", "blue");
+      segment("UY", "blue");
+      segment("YX", "green");
+      segment("AZ", "green");
+      return segment("ZT", "green");
     };
     return redraw();
   };
