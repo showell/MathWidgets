@@ -123,12 +123,13 @@ MultiplicationTables = ->
       break if i * 2 > n
       if n % i == 0
         max = i
-        return max if i > 10
+        return max if i * i >= n
     return max if max
-    return n if n < 15
-    return max_prime_factor(n-1)
+    return n if n <= 23
+    return max_prime_factor(n+1)
 
   width = 10
+  special_number = 10
   draw = ->
     table = $("#multiplication")
     table.empty()
@@ -157,13 +158,20 @@ MultiplicationTables = ->
           style = "background: #DDDDDD"
         else
           style = ""
-        td = $ "<td style='#{style}'>#{n}</td>"
+        td = $ "<td style='#{style}' align='center'>#{n}</td>"
         if max and (j + 1) % max == 0
           td.css "border-right", "2px black solid"
         td.attr "height", 30
         td.attr "width", 30
+        if n == special_number
+          td.css "border", "5px black solid"
+        else if special_number % n == 0
+          td.css "border", "3px blue solid"
+        else if n % special_number == 0
+          td.css "border", "3px red solid"
         f = (n) ->
           td.click ->
+            special_number = n
             width = max_prime_factor n
             draw()
         f(n)
@@ -176,6 +184,11 @@ MultiplicationTables = ->
     
   $("#multi_narrow").click ->
     width -= 1
+    draw()
+    
+  $("#multi_plus_one").click ->
+    special_number += 1
+    width = max_prime_factor special_number
     draw()
     
   draw()

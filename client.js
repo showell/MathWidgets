@@ -120,7 +120,7 @@
     };
   };
   MultiplicationTables = function() {
-    var draw, max_prime_factor, width;
+    var draw, max_prime_factor, special_number, width;
     max_prime_factor = function(n) {
       var i, max;
       max = null;
@@ -130,7 +130,7 @@
         }
         if (n % i === 0) {
           max = i;
-          if (i > 10) {
+          if (i * i >= n) {
             return max;
           }
         }
@@ -138,12 +138,13 @@
       if (max) {
         return max;
       }
-      if (n < 15) {
+      if (n <= 23) {
         return n;
       }
-      return max_prime_factor(n - 1);
+      return max_prime_factor(n + 1);
     };
     width = 10;
+    special_number = 10;
     draw = function() {
       var f, height, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
       table = $("#multiplication");
@@ -178,14 +179,22 @@
           } else {
             style = "";
           }
-          td = $("<td style='" + style + "'>" + n + "</td>");
+          td = $("<td style='" + style + "' align='center'>" + n + "</td>");
           if (max && (j + 1) % max === 0) {
             td.css("border-right", "2px black solid");
           }
           td.attr("height", 30);
           td.attr("width", 30);
+          if (n === special_number) {
+            td.css("border", "5px black solid");
+          } else if (special_number % n === 0) {
+            td.css("border", "3px blue solid");
+          } else if (n % special_number === 0) {
+            td.css("border", "3px red solid");
+          }
           f = function(n) {
             return td.click(function() {
+              special_number = n;
               width = max_prime_factor(n);
               return draw();
             });
@@ -203,6 +212,11 @@
     });
     $("#multi_narrow").click(function() {
       width -= 1;
+      return draw();
+    });
+    $("#multi_plus_one").click(function() {
+      special_number += 1;
+      width = max_prime_factor(special_number);
       return draw();
     });
     return draw();
