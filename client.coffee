@@ -1,4 +1,4 @@
-Canvas = ->
+Canvas = (div) ->
   width = 600
   height = 300
 
@@ -6,7 +6,7 @@ Canvas = ->
     <canvas id='canvas' width='#{width}' height='#{height}' style='border: 1px blue solid'>
     </canvas>
   """
-  $("#main").append canvas_html
+  div.append canvas_html
 
   canvas = document.getElementById("canvas")
   ctx = canvas.getContext("2d")
@@ -14,12 +14,12 @@ Canvas = ->
   clear: ->
     canvas.width = width
 
-  draw_triangle: (color, point1, point2, point3) ->
+  draw_polygon: (color, point1, more_points...) ->
     ctx.fillStyle = color
     ctx.beginPath()
     ctx.moveTo point1...
-    ctx.lineTo point2...
-    ctx.lineTo point3...
+    for point in more_points
+      ctx.lineTo point...
     ctx.lineTo point1...
     ctx.fill()
     ctx.closePath()
@@ -36,7 +36,8 @@ Canvas = ->
     ctx.stroke()
     ctx.closePath()
   
-TwelveTriangles = (canvas) ->
+TwelveTriangles = ->
+  canvas = Canvas $("#twelve_triangles") 
   skew = 0
   height = 1
   
@@ -52,9 +53,9 @@ TwelveTriangles = (canvas) ->
     v0 = triangle.charAt(0)
     v1 = triangle.charAt(1)
     v2 = triangle.charAt(2)
-    canvas.draw_triangle color, points[v0], points[v1], points[v2]
+    canvas.draw_polygon color, points[v0], points[v1], points[v2]
     
-  draw: ->
+  draw = ->
     points =
       A: [0, 2]
       B: [2, 2]
@@ -115,6 +116,8 @@ TwelveTriangles = (canvas) ->
     $("#wider").click ->
       height -= 0.1
       redraw()
+      
+  draw()
 
 MultiplicationTables = ->
   colors =
@@ -243,6 +246,5 @@ MultiplicationTables = ->
   draw()
 
 jQuery(document).ready ->
-  canvas = Canvas()
-  TwelveTriangles(canvas).draw()
+  TwelveTriangles()
   MultiplicationTables()
