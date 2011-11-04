@@ -118,6 +118,7 @@ TwelveTriangles = (canvas) ->
 
 MultiplicationTables = ->
   max_prime_factor = (n) ->
+    return n if n <= 15
     max = null
     for i in [2...n]
       break if i * 2 > n
@@ -131,6 +132,24 @@ MultiplicationTables = ->
   width = 10
   special_number = 10
   draw = ->
+    html = """
+      <h3>#{special_number}</h3>
+    """
+    for i in [1..special_number]
+      if special_number % i == 0
+        html += """
+          #{i} * #{special_number / i} = <b>#{special_number}</b><br>
+          """
+    html += "<hr>"
+    for i in [1..10]
+      html += """
+        <b>#{special_number}</b> * #{i} = #{special_number * i}<br>
+        """
+    facts = $ "<div>"
+    facts.html html
+    facts.css "border", "1px black solid"    
+    $("#multi_right").html facts
+        
     table = $("#multiplication")
     table.empty()
     height = Math.floor 169 / width
@@ -144,16 +163,30 @@ MultiplicationTables = ->
       table.append tr
       for j in [0...width]
         n = i * width + j + 1
-        if n % 13 == 0
+        if n % 15 == 0
+          style = "background: #DDAAAA"
+        else if n % 14 == 0
+          style = "background: #00DDDD"
+        else if n % 13 == 0
           style = "background: #FF00FF"
+        else if n % 12 == 0
+          style = "background: #BBBBBB"
         else if n % 11 == 0
           style = "background: #FFFF00"
+        else if n % 10 == 0
+          style = "background: #EEBBBB"
+        else if n % 9 == 0
+          style = "background: #00BB00"
+        else if n % 8 == 0
+          style = "background: #AAAAAA"
         else if n % 7 == 0
           style = "background: #00FFFF"
+        else if n % 6 == 0
+          style = "background: lightgreen"
         else if n % 5 == 0
-          style = "background: red"
+          style = "background: pink"
         else if n % 3 == 0
-          style = "background: lightblue"
+          style = "background: lightgreen"
         else if n % 2 == 0
           style = "background: #DDDDDD"
         else
@@ -161,14 +194,17 @@ MultiplicationTables = ->
         td = $ "<td style='#{style}' align='center'>#{n}</td>"
         if max and (j + 1) % max == 0
           td.css "border-right", "2px black solid"
-        td.attr "height", 30
-        td.attr "width", 30
+        td.attr "height", 40
+        td.attr "width", 40
+        td.attr "font-size", "13px"
         if n == special_number
           td.css "border", "5px black solid"
         else if special_number % n == 0
           td.css "border", "3px blue solid"
         else if n % special_number == 0
           td.css "border", "3px red solid"
+        if (n % width == 0) or (n % (width-1) == 0) or (n % (width+1) == 0)
+          td.css "font-weight", "bold"
         f = (n) ->
           td.click ->
             special_number = n
