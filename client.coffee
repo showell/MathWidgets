@@ -1,14 +1,14 @@
-Canvas = (div) ->
+Canvas = (div, id) ->
   width = 600
   height = 300
 
   canvas_html = """
-    <canvas id='canvas' width='#{width}' height='#{height}' style='border: 1px blue solid'>
+    <canvas id='#{id}' width='#{width}' height='#{height}' style='border: 1px blue solid'>
     </canvas>
   """
   div.append canvas_html
 
-  canvas = document.getElementById("canvas")
+  canvas = document.getElementById(id)
   ctx = canvas.getContext("2d")
 
   clear: ->
@@ -36,8 +36,79 @@ Canvas = (div) ->
     ctx.stroke()
     ctx.closePath()
   
+PythagProof = ->
+  canvas = Canvas $("#pythag_proof"), "pythag_canvas" 
+  
+  rescale = (point) ->
+    [x, y] = point
+    y -= 4
+    [x * 10 + 300, -y * 10 + 150]
+    
+  draw_poly = (poly, color, points) ->
+    coords = (points[poly.charAt(i)] for i in [0...poly.length])
+    console.log "pythag", coords
+    canvas.draw_polygon color, coords...
+
+  a = 7
+  b = 3
+  c = (a * b) / (a + b)
+  points =
+    A: -> [-a, 0]
+    B: -> [-a-b, 0]
+    C: -> [-a, c]
+    D: -> [-a, a]
+    E: -> [-a-b, a]
+    F: -> [-a-b, a+b]
+    G: -> [-a, a+b]
+    H: -> [0, a+b]
+    I: -> [a, a+b]
+    J: -> [a+b, a+b]
+    K: -> [a+b, a]
+    L: -> [a, a]
+    M: -> [b, a+b]
+    N: -> [a+b, 2*a+b]
+    O: -> [2*a+b, a]
+    P: -> [a+b, c]
+    Q: -> [a, 0]
+    R: -> [a, -a]
+    S: -> [a-c, -a]
+    T: -> [0, -a]
+    U: -> [0, 0]
+    V: -> [b, a+b+c]
+
+  triangles = [
+    ["FGDE", "cyan"]
+    ["EDCB", "pink"]
+    ["ABC", "lightblue"]
+    ["AUG", "yellow"]
+    ["UGH", "lightgreen"]
+    #
+    ["STU", "red"]
+    ["UQRS", "blue"]
+    #
+    ["HIQ", "lightgreen"]
+    ["HMV", "lightblue"]
+    ["VNJM", "blue"]
+    ["NKO", "yellow"]
+    ["OKP", "red"]
+    ["LKPQ", "pink"]
+    ["IJKL", "cyan"]
+  ]
+  
+  redraw = ->
+    canvas.clear()
+    scaled_points = {}
+    for vertex, point of points
+      scaled_points[vertex] = rescale point()
+    
+    for triangle in triangles
+      [vertices, color] = triangle
+      draw_poly vertices, color, scaled_points
+
+  redraw()      
+  
 TwelveTriangles = ->
-  canvas = Canvas $("#twelve_triangles") 
+  canvas = Canvas $("#twelve_triangles"), "twelve_triangles_canvas"
   skew = 0
   height = 1
   
@@ -246,5 +317,6 @@ MultiplicationTables = ->
   draw()
 
 jQuery(document).ready ->
+  PythagProof()
   TwelveTriangles()
   MultiplicationTables()

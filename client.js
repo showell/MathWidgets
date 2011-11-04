@@ -1,13 +1,13 @@
 (function() {
-  var Canvas, MultiplicationTables, TwelveTriangles;
+  var Canvas, MultiplicationTables, PythagProof, TwelveTriangles;
   var __slice = Array.prototype.slice;
-  Canvas = function(div) {
+  Canvas = function(div, id) {
     var canvas, canvas_html, ctx, height, width;
     width = 600;
     height = 300;
-    canvas_html = "<canvas id='canvas' width='" + width + "' height='" + height + "' style='border: 1px blue solid'>\n</canvas>";
+    canvas_html = "<canvas id='" + id + "' width='" + width + "' height='" + height + "' style='border: 1px blue solid'>\n</canvas>";
     div.append(canvas_html);
-    canvas = document.getElementById("canvas");
+    canvas = document.getElementById(id);
     ctx = canvas.getContext("2d");
     return {
       clear: function() {
@@ -41,9 +41,121 @@
       }
     };
   };
+  PythagProof = function() {
+    var a, b, c, canvas, draw_poly, points, redraw, rescale, triangles;
+    canvas = Canvas($("#pythag_proof"), "pythag_canvas");
+    rescale = function(point) {
+      var x, y;
+      x = point[0], y = point[1];
+      y -= 4;
+      return [x * 10 + 300, -y * 10 + 150];
+    };
+    draw_poly = function(poly, color, points) {
+      var coords, i;
+      coords = (function() {
+        var _ref, _results;
+        _results = [];
+        for (i = 0, _ref = poly.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+          _results.push(points[poly.charAt(i)]);
+        }
+        return _results;
+      })();
+      console.log("pythag", coords);
+      return canvas.draw_polygon.apply(canvas, [color].concat(__slice.call(coords)));
+    };
+    a = 7;
+    b = 3;
+    c = (a * b) / (a + b);
+    points = {
+      A: function() {
+        return [-a, 0];
+      },
+      B: function() {
+        return [-a - b, 0];
+      },
+      C: function() {
+        return [-a, c];
+      },
+      D: function() {
+        return [-a, a];
+      },
+      E: function() {
+        return [-a - b, a];
+      },
+      F: function() {
+        return [-a - b, a + b];
+      },
+      G: function() {
+        return [-a, a + b];
+      },
+      H: function() {
+        return [0, a + b];
+      },
+      I: function() {
+        return [a, a + b];
+      },
+      J: function() {
+        return [a + b, a + b];
+      },
+      K: function() {
+        return [a + b, a];
+      },
+      L: function() {
+        return [a, a];
+      },
+      M: function() {
+        return [b, a + b];
+      },
+      N: function() {
+        return [a + b, 2 * a + b];
+      },
+      O: function() {
+        return [2 * a + b, a];
+      },
+      P: function() {
+        return [a + b, c];
+      },
+      Q: function() {
+        return [a, 0];
+      },
+      R: function() {
+        return [a, -a];
+      },
+      S: function() {
+        return [a - c, -a];
+      },
+      T: function() {
+        return [0, -a];
+      },
+      U: function() {
+        return [0, 0];
+      },
+      V: function() {
+        return [b, a + b + c];
+      }
+    };
+    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STU", "red"], ["UQRS", "blue"], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", "blue"], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
+    redraw = function() {
+      var color, point, scaled_points, triangle, vertex, vertices, _i, _len, _results;
+      canvas.clear();
+      scaled_points = {};
+      for (vertex in points) {
+        point = points[vertex];
+        scaled_points[vertex] = rescale(point());
+      }
+      _results = [];
+      for (_i = 0, _len = triangles.length; _i < _len; _i++) {
+        triangle = triangles[_i];
+        vertices = triangle[0], color = triangle[1];
+        _results.push(draw_poly(vertices, color, scaled_points));
+      }
+      return _results;
+    };
+    return redraw();
+  };
   TwelveTriangles = function() {
     var canvas, draw, draw_triangle, height, rescale, skew;
-    canvas = Canvas($("#twelve_triangles"));
+    canvas = Canvas($("#twelve_triangles"), "twelve_triangles_canvas");
     skew = 0;
     height = 1;
     rescale = function(point) {
@@ -280,6 +392,7 @@
     return draw();
   };
   jQuery(document).ready(function() {
+    PythagProof();
     TwelveTriangles();
     return MultiplicationTables();
   });
