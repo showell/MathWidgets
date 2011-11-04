@@ -120,7 +120,49 @@
     };
   };
   MultiplicationTables = function() {
-    var draw, max_prime_factor, special_number, width;
+    var colors, draw, max_prime_factor, set_color, special_number, width;
+    colors = {
+      2: "#EEEEEE",
+      4: "#CCCCCC",
+      8: "#AAAAAA",
+      16: "#999999",
+      3: "#EEAAAA",
+      6: "#DDAAAA",
+      9: "#CCAAAA",
+      11: "DD6666",
+      5: "#AAEEAA",
+      10: "#AADDAA",
+      15: "#AACCAA",
+      20: "#AABBAA",
+      7: "#AAAADD",
+      14: "#AAAACC",
+      12: "#00FFFF",
+      13: "#FFFF00",
+      17: "#FF00FF",
+      18: "#55DD55",
+      19: "#DD00DD"
+    };
+    set_color = function(n, width) {
+      var color, delta, i, _i, _len, _ref, _step;
+      color = "white";
+      _ref = [0, 1];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        delta = _ref[_i];
+        i = width + delta;
+        if (n % i === 0 && colors[i]) {
+          return colors[i];
+        }
+      }
+      for (i = 20, _step = -1; i >= 1; i += _step) {
+        if (n % i === 0 && width % i === 0 && colors[i]) {
+          return colors[i];
+        }
+      }
+      if (n % 2 === 0) {
+        return colors[2];
+      }
+      return color;
+    };
     max_prime_factor = function(n) {
       var i, max;
       if (n <= 15) {
@@ -149,7 +191,7 @@
     width = 10;
     special_number = 10;
     draw = function() {
-      var f, facts, height, html, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
+      var color, f, facts, height, html, i, j, max, n, style, table, td, tr, _i, _len, _ref, _results;
       html = "<h3>" + special_number + "</h3>";
       for (i = 1; 1 <= special_number ? i <= special_number : i >= special_number; 1 <= special_number ? i++ : i--) {
         if (special_number % i === 0) {
@@ -181,35 +223,8 @@
         table.append(tr);
         for (j = 0; 0 <= width ? j < width : j > width; 0 <= width ? j++ : j--) {
           n = i * width + j + 1;
-          if (n % 15 === 0) {
-            style = "background: #DDAAAA";
-          } else if (n % 14 === 0) {
-            style = "background: #00DDDD";
-          } else if (n % 13 === 0) {
-            style = "background: #FF00FF";
-          } else if (n % 12 === 0) {
-            style = "background: #BBBBBB";
-          } else if (n % 11 === 0) {
-            style = "background: #FFFF00";
-          } else if (n % 10 === 0) {
-            style = "background: #EEBBBB";
-          } else if (n % 9 === 0) {
-            style = "background: #00BB00";
-          } else if (n % 8 === 0) {
-            style = "background: #AAAAAA";
-          } else if (n % 7 === 0) {
-            style = "background: #00FFFF";
-          } else if (n % 6 === 0) {
-            style = "background: lightgreen";
-          } else if (n % 5 === 0) {
-            style = "background: pink";
-          } else if (n % 3 === 0) {
-            style = "background: lightgreen";
-          } else if (n % 2 === 0) {
-            style = "background: #DDDDDD";
-          } else {
-            style = "";
-          }
+          color = set_color(n, width);
+          style = "background: " + color;
           td = $("<td style='" + style + "' align='center'>" + n + "</td>");
           if (max && (j + 1) % max === 0) {
             td.css("border-right", "2px black solid");
@@ -237,16 +252,20 @@
           f(n);
           tr.append(td);
         }
-        _results.push(tr.append($("<td> " + (i + 1) + " * " + width + " = " + ((i + 1) * width) + " </td>")));
+        td = $("<td> " + width + " * " + (i + 1) + " = " + ((i + 1) * width) + " </td>");
+        td.css("border", "1px blue solid");
+        _results.push(tr.append(td));
       }
       return _results;
     };
     $("#multi_wide").click(function() {
       width += 1;
+      special_number = width;
       return draw();
     });
     $("#multi_narrow").click(function() {
       width -= 1;
+      special_number = width;
       return draw();
     });
     $("#multi_plus_one").click(function() {

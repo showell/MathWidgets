@@ -117,6 +117,40 @@ TwelveTriangles = (canvas) ->
       redraw()
 
 MultiplicationTables = ->
+  colors =
+    2: "#EEEEEE"
+    4: "#CCCCCC"
+    8: "#AAAAAA"
+    16: "#999999"
+    3: "#EEAAAA"
+    6: "#DDAAAA"
+    9: "#CCAAAA"
+    11: "DD6666"
+    5: "#AAEEAA"
+    10: "#AADDAA"
+    15: "#AACCAA"
+    20: "#AABBAA"
+    7: "#AAAADD"
+    14: "#AAAACC"
+    12: "#00FFFF"
+    13: "#FFFF00"
+    17: "#FF00FF"
+    18: "#55DD55"
+    19: "#DD00DD"
+
+  set_color = (n, width) ->
+    color = "white"
+    for delta in [0, 1]
+      i = width + delta
+      if n % i == 0 and colors[i]
+        return colors[i]
+    for i in [20..1] by -1
+      if n % i == 0 and width % i == 0 and colors[i]
+        return colors[i]
+    if n % 2 == 0
+      return colors[2]
+    color
+
   max_prime_factor = (n) ->
     return n if n <= 15
     max = null
@@ -157,40 +191,15 @@ MultiplicationTables = ->
     for n in [2, 3, 4, 5, 7, 11, 13, 17]
       if width % n == 0
         max = n
-        
+
+          
     for i in [0...height]
       tr = $ "<tr>"
       table.append tr
       for j in [0...width]
         n = i * width + j + 1
-        if n % 15 == 0
-          style = "background: #DDAAAA"
-        else if n % 14 == 0
-          style = "background: #00DDDD"
-        else if n % 13 == 0
-          style = "background: #FF00FF"
-        else if n % 12 == 0
-          style = "background: #BBBBBB"
-        else if n % 11 == 0
-          style = "background: #FFFF00"
-        else if n % 10 == 0
-          style = "background: #EEBBBB"
-        else if n % 9 == 0
-          style = "background: #00BB00"
-        else if n % 8 == 0
-          style = "background: #AAAAAA"
-        else if n % 7 == 0
-          style = "background: #00FFFF"
-        else if n % 6 == 0
-          style = "background: lightgreen"
-        else if n % 5 == 0
-          style = "background: pink"
-        else if n % 3 == 0
-          style = "background: lightgreen"
-        else if n % 2 == 0
-          style = "background: #DDDDDD"
-        else
-          style = ""
+        color = set_color(n, width)
+        style = "background: #{color}"
         td = $ "<td style='#{style}' align='center'>#{n}</td>"
         if max and (j + 1) % max == 0
           td.css "border-right", "2px black solid"
@@ -212,14 +221,18 @@ MultiplicationTables = ->
             draw()
         f(n)
         tr.append td
-      tr.append $ "<td> #{i+1} * #{width} = #{(i+1)*(width)} </td>"
+      td = $ "<td> #{width} * #{i+1} = #{(i+1)*(width)} </td>"
+      td.css "border", "1px blue solid"
+      tr.append td
 
   $("#multi_wide").click ->
     width += 1
+    special_number = width
     draw()
     
   $("#multi_narrow").click ->
     width -= 1
+    special_number = width
     draw()
     
   $("#multi_plus_one").click ->
