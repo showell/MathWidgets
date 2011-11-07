@@ -149,13 +149,36 @@ PythagFolding = ->
   segment "green", I, M
   segment "green", M, F
   
+  x_offset = 50
+  canvas = Canvas $("#pythag_fold3"), "pythag_fold3_canvas", 600, height
+    
+  for i in [1..2]
+    draw_poly "lightgreen", A, B, C
+    draw_poly "yellow", A, C, D
+    segment "blue", A, C
+    x_offset += 100
+
+  draw_poly "black", A, B, M, K, N, D
+  draw_poly "cyan", M, C, N, K
+  segment "blue", E, F
+  
+  blue = "#AAAADD"
+  for i in [1..2]
+    x_offset += 100
+    D = [a, 0]
+    P = [a * a / b, a]
+    draw_poly blue, A, P, F, D
+    draw_poly "lightblue", P, F, C
+    draw_poly "red", A, E, P
+    draw_poly "pink", E, B, C, P
+
 PythagProof = ->
-  canvas = Canvas $("#pythag_proof"), "pythag_canvas" 
+  canvas = Canvas $("#pythag_proof"), "pythag_canvas", 350, 350
   
   rescale = (point) ->
     [x, y] = point
     y -= 4
-    [x * 8 + 300, -y * 8 + 150]
+    [x * 10 + 150, -y * 10 + 170]
 
   draw_poly = (poly, color, points) ->
     coords = (points[poly.charAt(i)] for i in [0...poly.length])

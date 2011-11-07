@@ -54,7 +54,7 @@
     };
   };
   PythagFolding = function() {
-    var A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, a, b, canvas, draw_poly, height, rescale, segment, x_offset;
+    var A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, a, b, blue, canvas, draw_poly, height, i, rescale, segment, x_offset, _results;
     x_offset = 50;
     height = 130;
     rescale = function(point) {
@@ -157,16 +157,39 @@
     segment("blue", I, K);
     segment("green", K, O);
     segment("green", I, M);
-    return segment("green", M, F);
+    segment("green", M, F);
+    x_offset = 50;
+    canvas = Canvas($("#pythag_fold3"), "pythag_fold3_canvas", 600, height);
+    for (i = 1; i <= 2; i++) {
+      draw_poly("lightgreen", A, B, C);
+      draw_poly("yellow", A, C, D);
+      segment("blue", A, C);
+      x_offset += 100;
+    }
+    draw_poly("black", A, B, M, K, N, D);
+    draw_poly("cyan", M, C, N, K);
+    segment("blue", E, F);
+    blue = "#AAAADD";
+    _results = [];
+    for (i = 1; i <= 2; i++) {
+      x_offset += 100;
+      D = [a, 0];
+      P = [a * a / b, a];
+      draw_poly(blue, A, P, F, D);
+      draw_poly("lightblue", P, F, C);
+      draw_poly("red", A, E, P);
+      _results.push(draw_poly("pink", E, B, C, P));
+    }
+    return _results;
   };
   PythagProof = function() {
     var a, b, blue, c, canvas, draw_poly, points, redraw, rescale, triangles;
-    canvas = Canvas($("#pythag_proof"), "pythag_canvas");
+    canvas = Canvas($("#pythag_proof"), "pythag_canvas", 350, 350);
     rescale = function(point) {
       var x, y;
       x = point[0], y = point[1];
       y -= 4;
-      return [x * 8 + 300, -y * 8 + 150];
+      return [x * 10 + 150, -y * 10 + 170];
     };
     draw_poly = function(poly, color, points) {
       var coords, i;
