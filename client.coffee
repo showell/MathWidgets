@@ -1,7 +1,4 @@
-Canvas = (div, id) ->
-  width = 600
-  height = 300
-
+Canvas = (div, id, width=600, height=300) ->
   canvas_html = """
     <canvas id='#{id}' width='#{width}' height='#{height}' style='border: 1px blue solid'>
     </canvas>
@@ -44,6 +41,114 @@ Canvas = (div, id) ->
     ctx.stroke()
     ctx.closePath()
   
+PythagFolding = ->
+  x_offset = 50
+  height = 130
+  rescale = (point) ->
+    [x, y] = point
+    [x * 10 + x_offset, height - y * 10 - 10]  
+
+  canvas = Canvas $("#pythag_fold1"), "pythag_fold1_canvas", 400, height
+
+  a = 8.5
+  b = 11
+
+  A = [0,0]
+  B = [0,b]
+  C = [a,b]
+  D = [a,0]
+
+  draw_poly = (color, points...) ->
+    scaled_points = (rescale point for point in points)
+    canvas.draw_polygon color, scaled_points...
+
+  segment = (color, point1, point2) ->
+    canvas.segment color, rescale(point1), rescale(point2)
+
+  draw_poly "lightblue", A, B, C, D
+  
+  x_offset += 120
+  
+  D = [a * (a*a - b*b) / (a*a + b*b), a * (2*a*b) / (a*a + b*b)]
+  draw_poly "lightblue", A, B, C
+  draw_poly "red", A, D, C
+  segment "black", A, C
+  
+  x_offset += 100
+  
+  D = [a, 0]
+  draw_poly "lightblue", A, B, C
+  draw_poly "lightblue", A, C, D
+  segment "blue", A, C
+  
+  x_offset = 50
+  canvas = Canvas $("#pythag_fold2"), "pythag_fold2_canvas", 800, height
+  draw_poly "lightblue", A, B, C
+  draw_poly "lightblue", A, C, D
+  segment "blue", A, C
+  
+  x_offset += 100
+  E = [0, a]
+  F = [a, a]
+  draw_poly "lightblue", A, B, C, F
+  segment "blue", A, C
+  draw_poly "red", A, E, F
+  segment "black", A, F
+  segment "pink", E, F
+  
+  x_offset += 100
+  G = [a, 2*a-b]
+  H = [0, 2*a-b]
+  K = [2*a-b, 2*a-b]
+  draw_poly "lightblue", A, E, F
+  draw_poly "red", E, F, G, H
+  segment "black", E, F
+  segment "pink", H, K
+  
+  x_offset += 100
+  L = [2*a-b, a]
+  draw_poly "lightblue", A, E, F
+  draw_poly "lightblue", E, F, K, H
+  draw_poly "red", L, K, F
+  segment "pink", H, K
+  segment "pink", L, K
+  segment "black", K, F
+  
+  x_offset += 100
+  I = [3*a-2*b, a]
+  draw_poly "lightblue", A, H, K
+  draw_poly "lightblue", E, L, K, H
+  draw_poly "red", L, K, I
+  segment "pink", H, K
+  segment "pink", L, K
+  segment "pink", K, I
+  segment "black", K, L
+  
+  x_offset += 100
+  J = [3*a-2*b, 2*a-b]
+  draw_poly "lightblue", A, H, K
+  draw_poly "lightblue", E, I, K, H
+  draw_poly "red", J, K, I
+  segment "pink", H, K
+  segment "pink", I, J
+  segment "black", I, K
+  
+  x_offset += 100
+  M = [2*a-b, b]
+  N = [a, 2*a-b]
+  O = [a, 3*a-2*b]
+  draw_poly "lightblue", A, B, C, D
+  segment "blue", A, C
+  segment "blue", A, F
+  segment "blue", E, F
+  segment "green", M, L
+  segment "blue", L, K
+  segment "green", K, N
+  segment "blue", I, K
+  segment "green", K, O
+  segment "green", I, M
+  segment "green", M, F
+  
 PythagProof = ->
   canvas = Canvas $("#pythag_proof"), "pythag_canvas" 
   
@@ -51,13 +156,14 @@ PythagProof = ->
     [x, y] = point
     y -= 4
     [x * 8 + 300, -y * 8 + 150]
-    
+
   draw_poly = (poly, color, points) ->
     coords = (points[poly.charAt(i)] for i in [0...poly.length])
     canvas.draw_polygon color, coords...
 
-  a = 8
-  b = 3
+
+  a = 8.5
+  b = 2.5
   c = (a * b) / (a + b)
   points =
     A: -> [-a, 0]
@@ -361,6 +467,8 @@ MultiplicationTables = ->
   draw()
 
 jQuery(document).ready ->
+  $("body").css "width", 800
   PythagProof()
+  PythagFolding()
   TwelveTriangles()
   MultiplicationTables()
