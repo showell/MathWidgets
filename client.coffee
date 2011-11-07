@@ -207,13 +207,13 @@ PythagProof = ->
     P: -> [a+b, c]
     Q: -> [a, 0]
     R: -> [a, -a]
-    S: -> [a, -a + c]
+    S: -> [0, c-a]
     T: -> [0, -a]
     U: -> [0, 0]
     V: -> [b, a+b+c]
     W: -> [0, a]
-    X: -> [a+b, -a]
-    Y: -> [a+b, 0]
+    X: -> [-b, -a]
+    Y: -> [-b, 0]
 
   blue = "#AAAADD"
   
@@ -224,8 +224,8 @@ PythagProof = ->
     ["AUG", "yellow"]
     ["UGH", "lightgreen"]
     #
-    ["SRTU", blue]
-    ["UQRS", "red"]
+    ["STRQ", blue]
+    ["UQS", "red"]
     #
     ["HIQ", "lightgreen"]
     ["HMV", "lightblue"]
@@ -270,12 +270,12 @@ PythagProof = ->
     segment "UQ", "green"
     segment "AG", "blue"
     
-    segment "QY", "pink"
-    segment "TX", "blue"
-    segment "UT", "green"
-    segment "YX", "green"
-    segment "UX", "black"
-
+    segment "XY", "green"
+    segment "XT", "pink"
+    segment "XQ", "black"
+    segment "TR", "green"
+    segment "QR", "green"
+    
   redraw()      
   
 TwelveTriangles = ->
