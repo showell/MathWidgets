@@ -191,9 +191,9 @@ PythagProof = ->
   points =
     A: -> [-a, 0]
     B: -> [-a-b, 0]
-    C: -> [-a, c]
-    D: -> [-a, a]
-    E: -> [-a-b, a]
+    C: -> [-a, b+c]
+    D: -> [-a, b]
+    E: -> [-a-b, b]
     F: -> [-a-b, a+b]
     G: -> [-a, a+b]
     H: -> [0, a+b]
@@ -211,16 +211,16 @@ PythagProof = ->
     T: -> [0, -a]
     U: -> [0, 0]
     V: -> [b, a+b+c]
-    W: -> [0, a]
+    W: -> [0, b]
     X: -> [-b, -a]
     Y: -> [-b, 0]
 
   blue = "#AAAADD"
   
   triangles = [
-    ["FGDE", "cyan"]
-    ["EDCB", "pink"]
-    ["ABC", "lightblue"]
+    ["EDAB", "cyan"]
+    ["ECGF", "pink"]
+    ["EDC", "lightblue"]
     ["AUG", "yellow"]
     ["UGH", "lightgreen"]
     #
@@ -242,21 +242,23 @@ PythagProof = ->
     for vertex, point of points
       scaled_points[vertex] = rescale point()
     
-    for triangle in triangles
-      [vertices, color] = triangle
-      draw_poly vertices, color, scaled_points
-
     segment = (segment, color) ->
       point1 = scaled_points[segment.charAt(0)]
       point2 = scaled_points[segment.charAt(1)]
       canvas.segment color, point1, point2
+
+    for triangle in triangles
+      [vertices, color] = triangle
+      draw_poly vertices, color, scaled_points
+
     
     # black > blue > green
-    segment "BW", "black"
+    segment "EH", "black"
     segment "HQ", "black"
     segment "HN", "black"
     segment "NO", "black"
     segment "OQ", "black"
+    segment "GU", "black"
     
     segment "BU", "blue"
     segment "UH", "blue"
@@ -266,15 +268,17 @@ PythagProof = ->
     segment "QI", "blue"
     segment "NK", "blue"
     
-    segment "EW", "blue"
+    segment "ED", "orange"
+    segment "DW", "green"
     segment "UQ", "green"
     segment "AG", "blue"
     
     segment "XY", "green"
-    segment "XT", "pink"
+    segment "XT", "orange"
     segment "XQ", "black"
     segment "TR", "green"
     segment "QR", "green"
+    segment "UT", "green"
     
   redraw()      
   

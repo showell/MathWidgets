@@ -214,13 +214,13 @@
         return [-a - b, 0];
       },
       C: function() {
-        return [-a, c];
+        return [-a, b + c];
       },
       D: function() {
-        return [-a, a];
+        return [-a, b];
       },
       E: function() {
-        return [-a - b, a];
+        return [-a - b, b];
       },
       F: function() {
         return [-a - b, a + b];
@@ -274,7 +274,7 @@
         return [b, a + b + c];
       },
       W: function() {
-        return [0, a];
+        return [0, b];
       },
       X: function() {
         return [-b, -a];
@@ -284,7 +284,7 @@
       }
     };
     blue = "#AAAADD";
-    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STRQ", blue], ["UQS", "red"], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", blue], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
+    triangles = [["EDAB", "cyan"], ["ECGF", "pink"], ["EDC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STRQ", blue], ["UQS", "red"], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", blue], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
     redraw = function() {
       var color, point, scaled_points, segment, triangle, vertex, vertices, _i, _len;
       canvas.clear();
@@ -293,36 +293,39 @@
         point = points[vertex];
         scaled_points[vertex] = rescale(point());
       }
-      for (_i = 0, _len = triangles.length; _i < _len; _i++) {
-        triangle = triangles[_i];
-        vertices = triangle[0], color = triangle[1];
-        draw_poly(vertices, color, scaled_points);
-      }
       segment = function(segment, color) {
         var point1, point2;
         point1 = scaled_points[segment.charAt(0)];
         point2 = scaled_points[segment.charAt(1)];
         return canvas.segment(color, point1, point2);
       };
-      segment("BW", "black");
+      for (_i = 0, _len = triangles.length; _i < _len; _i++) {
+        triangle = triangles[_i];
+        vertices = triangle[0], color = triangle[1];
+        draw_poly(vertices, color, scaled_points);
+      }
+      segment("EH", "black");
       segment("HQ", "black");
       segment("HN", "black");
       segment("NO", "black");
       segment("OQ", "black");
+      segment("GU", "black");
       segment("BU", "blue");
       segment("UH", "blue");
       segment("HF", "blue");
       segment("FB", "blue");
       segment("QI", "blue");
       segment("NK", "blue");
-      segment("EW", "blue");
+      segment("ED", "orange");
+      segment("DW", "green");
       segment("UQ", "green");
       segment("AG", "blue");
       segment("XY", "green");
-      segment("XT", "pink");
+      segment("XT", "orange");
       segment("XQ", "black");
       segment("TR", "green");
-      return segment("QR", "green");
+      segment("QR", "green");
+      return segment("UT", "green");
     };
     return redraw();
   };
