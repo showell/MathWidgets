@@ -207,14 +207,13 @@ PythagProof = ->
     P: -> [a+b, c]
     Q: -> [a, 0]
     R: -> [a, -a]
-    S: -> [a-c, -a]
+    S: -> [a, -a + c]
     T: -> [0, -a]
     U: -> [0, 0]
     V: -> [b, a+b+c]
     W: -> [0, a]
-    X: -> [a, -a-b]
-    Y: -> [0, -a-b]
-    Z: -> [-a, -a]
+    X: -> [a+b, -a]
+    Y: -> [a+b, 0]
 
   blue = "#AAAADD"
   
@@ -225,8 +224,8 @@ PythagProof = ->
     ["AUG", "yellow"]
     ["UGH", "lightgreen"]
     #
-    ["STU", "red"]
-    ["UQRS", blue]
+    ["SRTU", blue]
+    ["UQRS", "red"]
     #
     ["HIQ", "lightgreen"]
     ["HMV", "lightblue"]
@@ -269,14 +268,13 @@ PythagProof = ->
     
     segment "EW", "blue"
     segment "UQ", "green"
-    segment "UX", "black"
-    segment "QX", "blue"
     segment "AG", "blue"
-    segment "UY", "blue"
-    segment "YX", "green"
     
-    segment "AZ", "green"
-    segment "ZT", "green"
+    segment "QY", "pink"
+    segment "TX", "blue"
+    segment "UT", "green"
+    segment "YX", "green"
+    segment "UX", "black"
 
   redraw()      
   

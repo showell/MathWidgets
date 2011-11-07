@@ -262,7 +262,7 @@
         return [a, -a];
       },
       S: function() {
-        return [a - c, -a];
+        return [a, -a + c];
       },
       T: function() {
         return [0, -a];
@@ -277,17 +277,14 @@
         return [0, a];
       },
       X: function() {
-        return [a, -a - b];
+        return [a + b, -a];
       },
       Y: function() {
-        return [0, -a - b];
-      },
-      Z: function() {
-        return [-a, -a];
+        return [a + b, 0];
       }
     };
     blue = "#AAAADD";
-    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["STU", "red"], ["UQRS", blue], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", blue], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
+    triangles = [["FGDE", "cyan"], ["EDCB", "pink"], ["ABC", "lightblue"], ["AUG", "yellow"], ["UGH", "lightgreen"], ["SRTU", blue], ["UQRS", "red"], ["HIQ", "lightgreen"], ["HMV", "lightblue"], ["VNJM", blue], ["NKO", "yellow"], ["OKP", "red"], ["LKPQ", "pink"], ["IJKL", "cyan"]];
     redraw = function() {
       var color, point, scaled_points, segment, triangle, vertex, vertices, _i, _len;
       canvas.clear();
@@ -320,13 +317,12 @@
       segment("NK", "blue");
       segment("EW", "blue");
       segment("UQ", "green");
-      segment("UX", "black");
-      segment("QX", "blue");
       segment("AG", "blue");
-      segment("UY", "blue");
+      segment("QY", "pink");
+      segment("TX", "blue");
+      segment("UT", "green");
       segment("YX", "green");
-      segment("AZ", "green");
-      return segment("ZT", "green");
+      return segment("UX", "black");
     };
     return redraw();
   };
