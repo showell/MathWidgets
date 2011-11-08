@@ -42,7 +42,7 @@ Canvas = (div, id, width=600, height=300) ->
     ctx.closePath()
   
 Linkage = ->
-  width = 1000
+  width = 700
   height = 450
   x_offset = 0
   y_distort = 0
@@ -56,8 +56,8 @@ Linkage = ->
   a = 17
   b = 5
   h = 0
-  dh = 0.05
-  dt = 5
+  dh = 0.02
+  dt = 50
   
   path1 = []
   path2 = []
@@ -98,14 +98,14 @@ Linkage = ->
      
     x_offset = 0
     y_distort = d / (d+i)
-    show()
+    # show()
     A = rotate A
     B = rotate B
     C = rotate C
     D = rotate D
     E = rotate E
 
-    x_offset = 25
+    x_offset = 12
     y_distort = 1
     path1.push B
     path2.push D
