@@ -56,8 +56,10 @@ Linkage = ->
   a = 17
   b = 5
   h = 0
-  dh = 0.02
-  dt = 50
+  dh = 0.05
+  dt = 2
+
+  paused = false
   
   recording = true
   path1 = []
@@ -65,6 +67,9 @@ Linkage = ->
   path3 = []
   path4 = []
   draw = ->
+    if paused
+      return
+      
     canvas.clear()
     c = Math.sqrt a*a - b*b
     d = Math.sqrt c*c + h*h # distance from A to center of rhombus
@@ -81,6 +86,7 @@ Linkage = ->
     Y = [a + c/2, c]
     cos = c / (d+i)
     sin = Math.sqrt(1 - cos*cos) * h / i
+    
     rotate = (point) ->
       [x, y] = point
       [x*cos + y*sin, y*cos - x*sin]
@@ -105,6 +111,10 @@ Linkage = ->
     C = rotate C
     D = rotate D
     E = rotate E
+    
+    F = [B[0], d + 2*e / 2]
+    G = [0, 0]
+    H = [0, 0]
 
     x_offset = 12
     y_distort = 1
@@ -125,6 +135,15 @@ Linkage = ->
       dh *= -1
     setTimeout(draw, dt)
   draw()
+  button = $("#linkage_pause")
+  button.click ->
+    if paused
+      paused = false
+      draw()
+      button.val "pause"
+    else
+      paused = true
+      button.val "resume"
   
 PythagFolding = ->
   x_offset = 50

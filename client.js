@@ -54,7 +54,7 @@
     };
   };
   Linkage = function() {
-    var a, b, canvas, dh, draw, dt, h, height, path1, path2, path3, path4, recording, rescale, width, x_offset, y_distort;
+    var a, b, button, canvas, dh, draw, dt, h, height, path1, path2, path3, path4, paused, recording, rescale, width, x_offset, y_distort;
     width = 700;
     height = 450;
     x_offset = 0;
@@ -70,15 +70,19 @@
     a = 17;
     b = 5;
     h = 0;
-    dh = 0.02;
-    dt = 50;
+    dh = 0.05;
+    dt = 2;
+    paused = false;
     recording = true;
     path1 = [];
     path2 = [];
     path3 = [];
     path4 = [];
     draw = function() {
-      var A, B, C, D, E, Y, c, cos, d, e, i, path, rotate, segment, show, sin, _i, _len, _ref, _ref2;
+      var A, B, C, D, E, F, G, H, Y, c, cos, d, e, i, path, rotate, segment, show, sin, _i, _len, _ref, _ref2;
+      if (paused) {
+        return;
+      }
       canvas.clear();
       c = Math.sqrt(a * a - b * b);
       d = Math.sqrt(c * c + h * h);
@@ -116,6 +120,9 @@
       C = rotate(C);
       D = rotate(D);
       E = rotate(E);
+      F = [B[0], d + 2 * e / 2];
+      G = [0, 0];
+      H = [0, 0];
       x_offset = 12;
       y_distort = 1;
       if (recording) {
@@ -141,7 +148,18 @@
       }
       return setTimeout(draw, dt);
     };
-    return draw();
+    draw();
+    button = $("#linkage_pause");
+    return button.click(function() {
+      if (paused) {
+        paused = false;
+        draw();
+        return button.val("pause");
+      } else {
+        paused = true;
+        return button.val("resume");
+      }
+    });
   };
   PythagFolding = function() {
     var A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, a, b, blue, canvas, draw_poly, height, i, rescale, segment, x_offset, _results;
