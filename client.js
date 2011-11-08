@@ -1,5 +1,5 @@
 (function() {
-  var Canvas, MultiplicationTables, PythagFolding, PythagProof, TwelveTriangles;
+  var Canvas, Linkage, MultiplicationTables, PythagFolding, PythagProof, TwelveTriangles;
   var __slice = Array.prototype.slice;
   Canvas = function(div, id, width, height) {
     var canvas, canvas_html, ctx;
@@ -52,6 +52,91 @@
         return ctx.closePath();
       }
     };
+  };
+  Linkage = function() {
+    var a, b, canvas, dh, draw, dt, h, height, path1, path2, path3, path4, rescale, width, x_offset, y_distort;
+    width = 1000;
+    height = 450;
+    x_offset = 0;
+    y_distort = 0;
+    rescale = function(point) {
+      var x, y;
+      x = point[0], y = point[1];
+      x += x_offset;
+      y *= y_distort;
+      return [x * 20 + 100, height - y * 20 - 10];
+    };
+    canvas = Canvas($("#linkage"), "linkage_canvas", width, height);
+    a = 17;
+    b = 5;
+    h = 0;
+    dh = 0.05;
+    dt = 5;
+    path1 = [];
+    path2 = [];
+    path3 = [];
+    path4 = [];
+    draw = function() {
+      var A, B, C, D, E, Y, c, cos, d, e, i, path, rotate, segment, show, sin, _i, _len, _ref, _ref2;
+      canvas.clear();
+      c = Math.sqrt(a * a - b * b);
+      d = Math.sqrt(c * c + h * h);
+      e = Math.sqrt(b * b - h * h);
+      i = Math.abs(h);
+      A = [0, 0];
+      B = [0, d - i];
+      C = [e, d];
+      D = [0, d + i];
+      E = [-e, d];
+      Y = [a + c / 2, c];
+      cos = c / (d + i);
+      sin = Math.sqrt(1 - cos * cos) * h / i;
+      rotate = function(point) {
+        var x, y;
+        x = point[0], y = point[1];
+        return [x * cos + y * sin, y * cos - x * sin];
+      };
+      segment = function(color, point1, point2) {
+        return canvas.segment(color, rescale(point1), rescale(point2));
+      };
+      show = function() {
+        segment("pink", A, B);
+        segment("blue", E, D);
+        segment("blue", D, C);
+        segment("blue", C, B);
+        segment("blue", B, E);
+        segment("green", A, E);
+        return segment("green", A, C);
+      };
+      x_offset = 0;
+      y_distort = d / (d + i);
+      show();
+      A = rotate(A);
+      B = rotate(B);
+      C = rotate(C);
+      D = rotate(D);
+      E = rotate(E);
+      x_offset = 25;
+      y_distort = 1;
+      path1.push(B);
+      path2.push(D);
+      path3.push(C);
+      path4.push(E);
+      _ref = [path1, path2, path3, path4];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        path = _ref[_i];
+        for (i = 0, _ref2 = path.length - 1; 0 <= _ref2 ? i < _ref2 : i > _ref2; 0 <= _ref2 ? i++ : i--) {
+          segment("pink", path[i], path[i + 1]);
+        }
+      }
+      show();
+      h += dh;
+      if (h < -b || h > b) {
+        dh *= -1;
+      }
+      return setTimeout(draw, dt);
+    };
+    return draw();
   };
   PythagFolding = function() {
     var A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, a, b, blue, canvas, draw_poly, height, i, rescale, segment, x_offset, _results;
@@ -569,6 +654,7 @@
   };
   jQuery(document).ready(function() {
     $("body").css("width", 800);
+    Linkage();
     PythagProof();
     PythagFolding();
     TwelveTriangles();

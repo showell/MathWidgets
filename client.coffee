@@ -41,6 +41,88 @@ Canvas = (div, id, width=600, height=300) ->
     ctx.stroke()
     ctx.closePath()
   
+Linkage = ->
+  width = 1000
+  height = 450
+  x_offset = 0
+  y_distort = 0
+  rescale = (point) ->
+    [x, y] = point
+    x += x_offset
+    y *= y_distort
+    [x * 20 + 100, height - y * 20 - 10]  
+
+  canvas = Canvas $("#linkage"), "linkage_canvas", width, height
+  a = 17
+  b = 5
+  h = 0
+  dh = 0.05
+  dt = 5
+  
+  path1 = []
+  path2 = []
+  path3 = []
+  path4 = []
+  draw = ->
+    canvas.clear()
+    c = Math.sqrt a*a - b*b
+    d = Math.sqrt c*c + h*h # distance from A to center of rhombus
+    e = Math.sqrt b*b - h*h # distance from C to center of rhombus
+    # rhomubs is DBCE, D is top point, A is bottom point
+  
+    i = Math.abs(h)
+  
+    A = [0, 0]
+    B = [0, d-i]
+    C = [e, d]
+    D = [0, d+i]
+    E = [-e, d]
+    Y = [a + c/2, c]
+    cos = c / (d+i)
+    sin = Math.sqrt(1 - cos*cos) * h / i
+    rotate = (point) ->
+      [x, y] = point
+      [x*cos + y*sin, y*cos - x*sin]
+
+    segment = (color, point1, point2) ->
+      canvas.segment color, rescale(point1), rescale(point2)
+      
+    show = ->
+      segment "pink", A, B
+      segment "blue", E, D
+      segment "blue", D, C
+      segment "blue", C, B
+      segment "blue", B, E
+      segment "green", A, E
+      segment "green", A, C
+     
+    x_offset = 0
+    y_distort = d / (d+i)
+    show()
+    A = rotate A
+    B = rotate B
+    C = rotate C
+    D = rotate D
+    E = rotate E
+
+    x_offset = 25
+    y_distort = 1
+    path1.push B
+    path2.push D
+    path3.push C
+    path4.push E
+    
+    for path in [path1, path2, path3, path4]
+      for i in [0...path.length-1]
+        segment "pink", path[i], path[i+1]
+    show()
+
+    h += dh
+    if h < -b or h > b
+      dh *= -1
+    setTimeout(draw, dt)
+  draw()
+  
 PythagFolding = ->
   x_offset = 50
   height = 130
@@ -493,6 +575,7 @@ MultiplicationTables = ->
 
 jQuery(document).ready ->
   $("body").css "width", 800
+  Linkage()
   PythagProof()
   PythagFolding()
   TwelveTriangles()
