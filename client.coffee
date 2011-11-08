@@ -59,6 +59,7 @@ Linkage = ->
   dh = 0.02
   dt = 50
   
+  recording = true
   path1 = []
   path2 = []
   path3 = []
@@ -107,10 +108,11 @@ Linkage = ->
 
     x_offset = 12
     y_distort = 1
-    path1.push B
-    path2.push D
-    path3.push C
-    path4.push E
+    if recording
+      path1.push B
+      path2.push D
+      path3.push C
+      path4.push E
     
     for path in [path1, path2, path3, path4]
       for i in [0...path.length-1]
@@ -119,6 +121,7 @@ Linkage = ->
 
     h += dh
     if h < -b or h > b
+      recording = false if h < 0
       dh *= -1
     setTimeout(draw, dt)
   draw()

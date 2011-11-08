@@ -54,7 +54,7 @@
     };
   };
   Linkage = function() {
-    var a, b, canvas, dh, draw, dt, h, height, path1, path2, path3, path4, rescale, width, x_offset, y_distort;
+    var a, b, canvas, dh, draw, dt, h, height, path1, path2, path3, path4, recording, rescale, width, x_offset, y_distort;
     width = 700;
     height = 450;
     x_offset = 0;
@@ -72,6 +72,7 @@
     h = 0;
     dh = 0.02;
     dt = 50;
+    recording = true;
     path1 = [];
     path2 = [];
     path3 = [];
@@ -117,10 +118,12 @@
       E = rotate(E);
       x_offset = 12;
       y_distort = 1;
-      path1.push(B);
-      path2.push(D);
-      path3.push(C);
-      path4.push(E);
+      if (recording) {
+        path1.push(B);
+        path2.push(D);
+        path3.push(C);
+        path4.push(E);
+      }
       _ref = [path1, path2, path3, path4];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         path = _ref[_i];
@@ -131,6 +134,9 @@
       show();
       h += dh;
       if (h < -b || h > b) {
+        if (h < 0) {
+          recording = false;
+        }
         dh *= -1;
       }
       return setTimeout(draw, dt);
