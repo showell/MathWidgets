@@ -2,7 +2,7 @@
   var Canvas, Linkage, MultiplicationTables, PythagFolding, PythagProof, TwelveTriangles;
   var __slice = Array.prototype.slice;
   Canvas = function(div, id, width, height) {
-    var canvas, canvas_html, ctx;
+    var canvas, canvas_html, ctx, lineTo, moveTo;
     if (width == null) {
       width = 600;
     }
@@ -13,6 +13,16 @@
     div.append(canvas_html);
     canvas = document.getElementById(id);
     ctx = canvas.getContext("2d");
+    moveTo = function(point) {
+      var x, y;
+      x = point[0], y = point[1];
+      return ctx.moveTo(Math.floor(x), Math.floor(y));
+    };
+    lineTo = function(point) {
+      var x, y;
+      x = point[0], y = point[1];
+      return ctx.lineTo(Math.floor(x), Math.floor(y));
+    };
     return {
       clear: function() {
         return canvas.width = width;
@@ -21,8 +31,8 @@
         ctx.strokeStyle = color;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo.apply(ctx, point1);
-        ctx.lineTo.apply(ctx, point2);
+        moveTo(point1);
+        lineTo(point2);
         ctx.stroke();
         return ctx.closePath();
       },
@@ -31,12 +41,12 @@
         color = arguments[0], point1 = arguments[1], more_points = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo.apply(ctx, point1);
+        moveTo(point1);
         for (_i = 0, _len = more_points.length; _i < _len; _i++) {
           point = more_points[_i];
-          ctx.lineTo.apply(ctx, point);
+          lineTo(point);
         }
-        ctx.lineTo.apply(ctx, point1);
+        lineTo(point1);
         ctx.fill();
         return ctx.closePath();
       },
@@ -44,10 +54,10 @@
         ctx.strokeStyle = color;
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo.apply(ctx, point1);
-        ctx.lineTo.apply(ctx, point2);
-        ctx.lineTo.apply(ctx, point3);
-        ctx.lineTo.apply(ctx, point1);
+        moveTo(point1);
+        lineTo(point2);
+        lineTo(point3);
+        lineTo(point1);
         ctx.stroke();
         return ctx.closePath();
       }
@@ -79,7 +89,7 @@
     path3 = [];
     path4 = [];
     draw = function() {
-      var A, B, C, D, E, F, G, H, Y, c, cos, d, e, i, path, rotate, segment, show, sin, _i, _len, _ref, _ref2;
+      var A, B, C, D, E, Y, c, cos, d, e, i, path, pos_neg, rotate, segment, show, sin, _i, _len, _ref, _ref2;
       if (paused) {
         return;
       }
@@ -87,7 +97,8 @@
       c = Math.sqrt(a * a - b * b);
       d = Math.sqrt(c * c + h * h);
       e = Math.sqrt(b * b - h * h);
-      i = Math.abs(h);
+      pos_neg = h > 0 ? 1 : -1;
+      i = pos_neg * h;
       A = [0, 0];
       B = [0, d - i];
       C = [e, d];
@@ -95,7 +106,7 @@
       E = [-e, d];
       Y = [a + c / 2, c];
       cos = c / (d + i);
-      sin = Math.sqrt(1 - cos * cos) * h / i;
+      sin = Math.sqrt(1 - cos * cos) * pos_neg;
       rotate = function(point) {
         var x, y;
         x = point[0], y = point[1];
@@ -113,16 +124,11 @@
         segment("green", A, E);
         return segment("green", A, C);
       };
-      x_offset = 0;
-      y_distort = d / (d + i);
       A = rotate(A);
       B = rotate(B);
       C = rotate(C);
       D = rotate(D);
       E = rotate(E);
-      F = [B[0], d + 2 * e / 2];
-      G = [0, 0];
-      H = [0, 0];
       x_offset = 12;
       y_distort = 1;
       if (recording) {
@@ -145,6 +151,7 @@
           recording = false;
         }
         dh *= -1;
+        h += dh;
       }
       return setTimeout(draw, dt);
     };

@@ -7,6 +7,14 @@ Canvas = (div, id, width=600, height=300) ->
 
   canvas = document.getElementById(id)
   ctx = canvas.getContext("2d")
+  
+  moveTo = (point) ->
+    [x,y] = point
+    ctx.moveTo Math.floor(x), Math.floor(y)
+    
+  lineTo = (point) ->
+    [x,y] = point
+    ctx.lineTo Math.floor(x), Math.floor(y)
 
   clear: ->
     canvas.width = width
@@ -15,18 +23,18 @@ Canvas = (div, id, width=600, height=300) ->
     ctx.strokeStyle = color
     ctx.lineWidth = 2
     ctx.beginPath()
-    ctx.moveTo point1...
-    ctx.lineTo point2...
+    moveTo point1
+    lineTo point2
     ctx.stroke()
     ctx.closePath()
     
   draw_polygon: (color, point1, more_points...) ->
     ctx.fillStyle = color
     ctx.beginPath()
-    ctx.moveTo point1...
+    moveTo point1
     for point in more_points
-      ctx.lineTo point...
-    ctx.lineTo point1...
+      lineTo point
+    lineTo point1
     ctx.fill()
     ctx.closePath()
   
@@ -34,10 +42,10 @@ Canvas = (div, id, width=600, height=300) ->
     ctx.strokeStyle = color
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo point1...
-    ctx.lineTo point2...
-    ctx.lineTo point3...
-    ctx.lineTo point1...
+    moveTo point1
+    lineTo point2
+    lineTo point3
+    lineTo point1
     ctx.stroke()
     ctx.closePath()
   
@@ -76,7 +84,12 @@ Linkage = ->
     e = Math.sqrt b*b - h*h # distance from C to center of rhombus
     # rhomubs is DBCE, D is top point, A is bottom point
   
-    i = Math.abs(h)
+    pos_neg =
+      if h > 0
+        1
+      else
+        -1
+    i = pos_neg * h
   
     A = [0, 0]
     B = [0, d-i]
@@ -85,8 +98,8 @@ Linkage = ->
     E = [-e, d]
     Y = [a + c/2, c]
     cos = c / (d+i)
-    sin = Math.sqrt(1 - cos*cos) * h / i
-    
+    sin = Math.sqrt(1 - cos*cos) * pos_neg
+
     rotate = (point) ->
       [x, y] = point
       [x*cos + y*sin, y*cos - x*sin]
@@ -102,19 +115,12 @@ Linkage = ->
       segment "blue", B, E
       segment "green", A, E
       segment "green", A, C
-     
-    x_offset = 0
-    y_distort = d / (d+i)
-    # show()
+
     A = rotate A
     B = rotate B
     C = rotate C
     D = rotate D
     E = rotate E
-    
-    F = [B[0], d + 2*e / 2]
-    G = [0, 0]
-    H = [0, 0]
 
     x_offset = 12
     y_distort = 1
@@ -133,6 +139,7 @@ Linkage = ->
     if h < -b or h > b
       recording = false if h < 0
       dh *= -1
+      h += dh
     setTimeout(draw, dt)
   draw()
   button = $("#linkage_pause")
