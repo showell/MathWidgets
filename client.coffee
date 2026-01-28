@@ -1,9 +1,15 @@
+get_div = (selector) ->
+    document.querySelector selector
+
+append = (div, html) ->
+    div.innerHTML += html
+
 Canvas = (div, id, width=600, height=300) ->
   canvas_html = """
     <canvas id='#{id}' width='#{width}' height='#{height}' style='border: 1px blue solid'>
     </canvas>
   """
-  div.append canvas_html
+  append div, canvas_html
 
   canvas = document.getElementById(id)
   ctx = canvas.getContext("2d")
@@ -60,7 +66,7 @@ Linkage = ->
     y *= y_distort
     [x * 20 + 100, height - y * 20 - 10]
 
-  canvas = Canvas $("#linkage"), "linkage_canvas", width, height
+  canvas = Canvas get_div("#linkage"), "linkage_canvas", width, height
   a = 17
   b = 5
   h = 0
@@ -142,8 +148,8 @@ Linkage = ->
       h += dh
     setTimeout(draw, dt)
   draw()
-  button = $("#linkage_pause")
-  button.click ->
+  button = get_div("#linkage_pause")
+  button.addEventListener "click", ->
     if paused
       paused = false
       draw()
@@ -159,7 +165,7 @@ PythagFolding = ->
     [x, y] = point
     [x * 10 + x_offset, height - y * 10 - 10]
 
-  canvas = Canvas $("#pythag_fold1"), "pythag_fold1_canvas", 400, height
+  canvas = Canvas get_div("#pythag_fold1"), "pythag_fold1_canvas", 400, height
 
   a = 8.5
   b = 11
@@ -193,7 +199,7 @@ PythagFolding = ->
   segment "blue", A, C
 
   x_offset = 50
-  canvas = Canvas $("#pythag_fold2"), "pythag_fold2_canvas", 800, height
+  canvas = Canvas get_div("#pythag_fold2"), "pythag_fold2_canvas", 800, height
   draw_poly "lightblue", A, B, C
   draw_poly "lightblue", A, C, D
   segment "blue", A, C
@@ -261,7 +267,7 @@ PythagFolding = ->
   segment "green", M, F
 
   x_offset = 50
-  canvas = Canvas $("#pythag_fold3"), "pythag_fold3_canvas", 600, height
+  canvas = Canvas get_div("#pythag_fold3"), "pythag_fold3_canvas", 600, height
 
   for i in [1..2]
     draw_poly "lightgreen", A, B, C
@@ -284,7 +290,7 @@ PythagFolding = ->
     draw_poly "pink", E, B, C, P
 
 PythagProof = ->
-  canvas = Canvas $("#pythag_proof"), "pythag_canvas", 350, 350
+  canvas = Canvas get_div("#pythag_proof"), "pythag_canvas", 350, 350
 
   rescale = (point) ->
     [x, y] = point
@@ -394,7 +400,7 @@ PythagProof = ->
   redraw()
 
 TwelveTriangles = ->
-  canvas = Canvas $("#twelve_triangles"), "twelve_triangles_canvas"
+  canvas = Canvas get_div("#twelve_triangles"), "twelve_triangles_canvas"
   skew = 0
   height = 1
 
@@ -458,154 +464,27 @@ TwelveTriangles = ->
 
     redraw()
 
-    $("#more_skew").click ->
+    get_div("#more_skew").addEventListener "click", ->
       skew += 0.2
       redraw()
 
-    $("#less_skew").click ->
+    get_div("#less_skew").addEventListener "click", ->
       skew -= 0.2
       redraw()
 
-    $("#taller").click ->
+    get_div("#taller").addEventListener "click", ->
       height += 0.1
       redraw()
 
-    $("#wider").click ->
+    get_div("#wider").addEventListener "click", ->
       height -= 0.1
       redraw()
 
   draw()
 
-MultiplicationTables = ->
-  colors =
-    2: "#EEEEEE"
-    4: "#CCCCCC"
-    8: "#AAAAAA"
-    16: "#999999"
-    3: "#EEAAAA"
-    6: "#DDAAAA"
-    9: "#CCAAAA"
-    11: "DD6666"
-    5: "#AAEEAA"
-    10: "#AADDAA"
-    15: "#AACCAA"
-    20: "#AABBAA"
-    7: "#AAAADD"
-    14: "#AAAACC"
-    12: "#00FFFF"
-    13: "#FFFF00"
-    17: "#FF00FF"
-    18: "#55DD55"
-    19: "#DD00DD"
-
-  set_color = (n, width) ->
-    color = "white"
-    for delta in [0, 1]
-      i = width + delta
-      if n % i == 0 and colors[i]
-        return colors[i]
-    for i in [20..1] by -1
-      if n % i == 0 and width % i == 0 and colors[i]
-        return colors[i]
-    if n % 2 == 0
-      return colors[2]
-    color
-
-  max_prime_factor = (n) ->
-    return n if n <= 15
-    max = null
-    for i in [2...n]
-      break if i * 2 > n
-      if n % i == 0
-        max = i
-        return max if i * i >= n
-    return max if max
-    return n if n <= 23
-    return max_prime_factor(n+1)
-
-  width = 10
-  special_number = 10
-  draw = ->
-    html = """
-      <h3>#{special_number}</h3>
-    """
-    for i in [1..special_number]
-      if special_number % i == 0
-        html += """
-          #{i} * #{special_number / i} = <b>#{special_number}</b><br>
-          """
-    html += "<hr>"
-    for i in [1..10]
-      html += """
-        <b>#{special_number}</b> * #{i} = #{special_number * i}<br>
-        """
-    facts = $ "<div>"
-    facts.html html
-    facts.css "border", "1px black solid"
-    $("#multi_right").html facts
-
-    table = $("#multiplication")
-    table.empty()
-    height = Math.floor 169 / width
-    max = null
-    for n in [2, 3, 4, 5, 7, 11, 13, 17]
-      if width % n == 0
-        max = n
-
-
-    for i in [0...height]
-      tr = $ "<tr>"
-      table.append tr
-      for j in [0...width]
-        n = i * width + j + 1
-        color = set_color(n, width)
-        style = "background: #{color}"
-        td = $ "<td style='#{style}' align='center'>#{n}</td>"
-        if max and (j + 1) % max == 0
-          td.css "border-right", "2px black solid"
-        td.attr "height", 40
-        td.attr "width", 40
-        td.attr "font-size", "13px"
-        if n == special_number
-          td.css "border", "5px black solid"
-        else if special_number % n == 0
-          td.css "border", "3px blue solid"
-        else if n % special_number == 0
-          td.css "border", "3px red solid"
-        if (n % width == 0) or (n % (width-1) == 0) or (n % (width+1) == 0)
-          td.css "font-weight", "bold"
-        f = (n) ->
-          td.click ->
-            special_number = n
-            width = max_prime_factor n
-            draw()
-        f(n)
-        tr.append td
-      td = $ "<td> #{width} * #{i+1} = #{(i+1)*(width)} </td>"
-      td.css "border", "1px blue solid"
-      tr.append td
-
-  $("#multi_wide").click ->
-    width += 1
-    special_number = width
-    draw()
-
-  $("#multi_narrow").click ->
-    width -= 1
-    special_number = width
-    draw()
-
-  $("#multi_plus_one").click ->
-    special_number += 1
-    width = max_prime_factor special_number
-    draw()
-
-  draw()
-
 do ->
-  $("body").css "width", 800
+  get_div("body").style.width = 800
   Linkage()
   PythagProof()
   PythagFolding()
   TwelveTriangles()
-  MultiplicationTables()
