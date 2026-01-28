@@ -7,11 +7,11 @@ Canvas = (div, id, width=600, height=300) ->
 
   canvas = document.getElementById(id)
   ctx = canvas.getContext("2d")
-  
+
   moveTo = (point) ->
     [x,y] = point
     ctx.moveTo Math.floor(x), Math.floor(y)
-    
+
   lineTo = (point) ->
     [x,y] = point
     ctx.lineTo Math.floor(x), Math.floor(y)
@@ -27,7 +27,7 @@ Canvas = (div, id, width=600, height=300) ->
     lineTo point2
     ctx.stroke()
     ctx.closePath()
-    
+
   draw_polygon: (color, point1, more_points...) ->
     ctx.fillStyle = color
     ctx.beginPath()
@@ -37,7 +37,7 @@ Canvas = (div, id, width=600, height=300) ->
     lineTo point1
     ctx.fill()
     ctx.closePath()
-  
+
   outline_triangle: (color, point1, point2, point3) ->
     ctx.strokeStyle = color
     ctx.lineWidth = 1
@@ -48,7 +48,7 @@ Canvas = (div, id, width=600, height=300) ->
     lineTo point1
     ctx.stroke()
     ctx.closePath()
-  
+
 Linkage = ->
   width = 700
   height = 450
@@ -58,7 +58,7 @@ Linkage = ->
     [x, y] = point
     x += x_offset
     y *= y_distort
-    [x * 20 + 100, height - y * 20 - 10]  
+    [x * 20 + 100, height - y * 20 - 10]
 
   canvas = Canvas $("#linkage"), "linkage_canvas", width, height
   a = 17
@@ -68,7 +68,7 @@ Linkage = ->
   dt = 2
 
   paused = false
-  
+
   recording = true
   path1 = []
   path2 = []
@@ -77,20 +77,20 @@ Linkage = ->
   draw = ->
     if paused
       return
-      
+
     canvas.clear()
     c = Math.sqrt a*a - b*b
     d = Math.sqrt c*c + h*h # distance from A to center of rhombus
     e = Math.sqrt b*b - h*h # distance from C to center of rhombus
     # rhomubs is DBCE, D is top point, A is bottom point
-  
+
     pos_neg =
       if h > 0
         1
       else
         -1
     i = pos_neg * h
-  
+
     A = [0, 0]
     B = [0, d-i]
     C = [e, d]
@@ -106,7 +106,7 @@ Linkage = ->
 
     segment = (color, point1, point2) ->
       canvas.segment color, rescale(point1), rescale(point2)
-      
+
     show = ->
       segment "pink", A, B
       segment "blue", E, D
@@ -129,7 +129,7 @@ Linkage = ->
       path2.push D
       path3.push C
       path4.push E
-    
+
     for path in [path1, path2, path3, path4]
       for i in [0...path.length-1]
         segment "pink", path[i], path[i+1]
@@ -151,13 +151,13 @@ Linkage = ->
     else
       paused = true
       button.val "resume"
-  
+
 PythagFolding = ->
   x_offset = 50
   height = 130
   rescale = (point) ->
     [x, y] = point
-    [x * 10 + x_offset, height - y * 10 - 10]  
+    [x * 10 + x_offset, height - y * 10 - 10]
 
   canvas = Canvas $("#pythag_fold1"), "pythag_fold1_canvas", 400, height
 
@@ -177,27 +177,27 @@ PythagFolding = ->
     canvas.segment color, rescale(point1), rescale(point2)
 
   draw_poly "lightblue", A, B, C, D
-  
+
   x_offset += 120
-  
+
   D = [a * (a*a - b*b) / (a*a + b*b), a * (2*a*b) / (a*a + b*b)]
   draw_poly "lightblue", A, B, C
   draw_poly "red", A, D, C
   segment "black", A, C
-  
+
   x_offset += 100
-  
+
   D = [a, 0]
   draw_poly "lightblue", A, B, C
   draw_poly "lightblue", A, C, D
   segment "blue", A, C
-  
+
   x_offset = 50
   canvas = Canvas $("#pythag_fold2"), "pythag_fold2_canvas", 800, height
   draw_poly "lightblue", A, B, C
   draw_poly "lightblue", A, C, D
   segment "blue", A, C
-  
+
   x_offset += 100
   E = [0, a]
   F = [a, a]
@@ -206,7 +206,7 @@ PythagFolding = ->
   draw_poly "red", A, E, F
   segment "black", A, F
   segment "pink", E, F
-  
+
   x_offset += 100
   G = [a, 2*a-b]
   H = [0, 2*a-b]
@@ -215,7 +215,7 @@ PythagFolding = ->
   draw_poly "red", E, F, G, H
   segment "black", E, F
   segment "pink", H, K
-  
+
   x_offset += 100
   L = [2*a-b, a]
   draw_poly "lightblue", A, E, F
@@ -224,7 +224,7 @@ PythagFolding = ->
   segment "pink", H, K
   segment "pink", L, K
   segment "black", K, F
-  
+
   x_offset += 100
   I = [3*a-2*b, a]
   draw_poly "lightblue", A, H, K
@@ -234,7 +234,7 @@ PythagFolding = ->
   segment "pink", L, K
   segment "pink", K, I
   segment "black", K, L
-  
+
   x_offset += 100
   J = [3*a-2*b, 2*a-b]
   draw_poly "lightblue", A, H, K
@@ -243,7 +243,7 @@ PythagFolding = ->
   segment "pink", H, K
   segment "pink", I, J
   segment "black", I, K
-  
+
   x_offset += 100
   M = [2*a-b, b]
   N = [a, 2*a-b]
@@ -259,10 +259,10 @@ PythagFolding = ->
   segment "green", K, O
   segment "green", I, M
   segment "green", M, F
-  
+
   x_offset = 50
   canvas = Canvas $("#pythag_fold3"), "pythag_fold3_canvas", 600, height
-    
+
   for i in [1..2]
     draw_poly "lightgreen", A, B, C
     draw_poly "yellow", A, C, D
@@ -272,7 +272,7 @@ PythagFolding = ->
   draw_poly "black", A, B, M, K, N, D
   draw_poly "cyan", M, C, N, K
   segment "blue", E, F
-  
+
   blue = "#AAAADD"
   for i in [1..2]
     x_offset += 100
@@ -285,7 +285,7 @@ PythagFolding = ->
 
 PythagProof = ->
   canvas = Canvas $("#pythag_proof"), "pythag_canvas", 350, 350
-  
+
   rescale = (point) ->
     [x, y] = point
     y -= 4
@@ -327,7 +327,7 @@ PythagProof = ->
     Y: -> [-b, 0]
 
   blue = "#AAAADD"
-  
+
   triangles = [
     ["EDAB", "cyan"]
     ["ECGF", "pink"]
@@ -346,13 +346,13 @@ PythagProof = ->
     ["LKPQ", "pink"]
     ["IJKL", "cyan"]
   ]
-  
+
   redraw = ->
     canvas.clear()
     scaled_points = {}
     for vertex, point of points
       scaled_points[vertex] = rescale point()
-    
+
     segment = (segment, color) ->
       point1 = scaled_points[segment.charAt(0)]
       point2 = scaled_points[segment.charAt(1)]
@@ -362,7 +362,7 @@ PythagProof = ->
       [vertices, color] = triangle
       draw_poly vertices, color, scaled_points
 
-    
+
     # black > blue > green
     segment "EH", "black"
     segment "HQ", "black"
@@ -370,34 +370,34 @@ PythagProof = ->
     segment "NO", "black"
     segment "OQ", "black"
     segment "GU", "black"
-    
+
     segment "BU", "blue"
     segment "UH", "blue"
     segment "HF", "blue"
     segment "FB", "blue"
-    
+
     segment "QI", "blue"
     segment "NK", "blue"
-    
+
     segment "ED", "orange"
     segment "DW", "green"
     segment "UQ", "green"
     segment "AG", "blue"
-    
+
     segment "XY", "green"
     segment "XT", "orange"
     segment "XQ", "black"
     segment "TR", "green"
     segment "QR", "green"
     segment "UT", "green"
-    
-  redraw()      
-  
+
+  redraw()
+
 TwelveTriangles = ->
   canvas = Canvas $("#twelve_triangles"), "twelve_triangles_canvas"
   skew = 0
   height = 1
-  
+
   rescale = (point) ->
     [x, y] = point
     x -= 4 # keep centroid centered
@@ -405,13 +405,13 @@ TwelveTriangles = ->
     x /= height
     y *= height
     [x * 40 + 300, -y * 40 + 150]
-    
+
   draw_triangle = (triangle, color, points) ->
     v0 = triangle.charAt(0)
     v1 = triangle.charAt(1)
     v2 = triangle.charAt(2)
     canvas.draw_polygon color, points[v0], points[v1], points[v2]
-    
+
   draw = ->
     points =
       A: [0, 2]
@@ -425,7 +425,7 @@ TwelveTriangles = ->
       I: [0, -2]
       J: [2, -2]
       K: [6, -2]
-      
+
 
     triangles = [
       ["ABE", "red"]
@@ -442,26 +442,26 @@ TwelveTriangles = ->
       ["EJH", "lightgreen"]
       ["JHK", "pink"]
     ]
-    
+
     redraw = ->
       canvas.clear()
       scaled_points = {}
       for vertex, point of points
         scaled_points[vertex] = rescale point
-      
+
       for triangle in triangles
         [vertices, color] = triangle
         draw_triangle vertices, color, scaled_points
-      
+
       vertices = (scaled_points[vertex] for vertex in ["E", "C", "K"])
       canvas.outline_triangle "black", vertices...
 
     redraw()
-    
+
     $("#more_skew").click ->
       skew += 0.2
       redraw()
-          
+
     $("#less_skew").click ->
       skew -= 0.2
       redraw()
@@ -469,11 +469,11 @@ TwelveTriangles = ->
     $("#taller").click ->
       height += 0.1
       redraw()
-    
+
     $("#wider").click ->
       height -= 0.1
       redraw()
-      
+
   draw()
 
 MultiplicationTables = ->
@@ -541,9 +541,9 @@ MultiplicationTables = ->
         """
     facts = $ "<div>"
     facts.html html
-    facts.css "border", "1px black solid"    
+    facts.css "border", "1px black solid"
     $("#multi_right").html facts
-        
+
     table = $("#multiplication")
     table.empty()
     height = Math.floor 169 / width
@@ -552,7 +552,7 @@ MultiplicationTables = ->
       if width % n == 0
         max = n
 
-          
+
     for i in [0...height]
       tr = $ "<tr>"
       table.append tr
@@ -589,20 +589,20 @@ MultiplicationTables = ->
     width += 1
     special_number = width
     draw()
-    
+
   $("#multi_narrow").click ->
     width -= 1
     special_number = width
     draw()
-    
+
   $("#multi_plus_one").click ->
     special_number += 1
     width = max_prime_factor special_number
     draw()
-    
+
   draw()
 
-jQuery(document).ready ->
+do ->
   $("body").css "width", 800
   Linkage()
   PythagProof()
